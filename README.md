@@ -7,8 +7,8 @@
 <p align="center">
  <a href="#introduction">Project Overview</a> •
  <a href="#setup-instructions">Setup Instructions</a> •
- <a href="#bonus-features-implemented">Bonus features implemented</a> •
  <a href="#apk-build-instructions">APK build instructions</a> •
+ <a href="#bonus-features-implemented">Bonus features implemented</a> •
  <a href="#source-code">Source Code</a> •
  <a href="#released-apk">Released Apk</a> •
 </p>
