@@ -25,8 +25,14 @@ git clone https://github.com/thisisvd/task1-api-transactions.git
 - Sync the project -> Clean Project -> then build it and run it on your appropiate android device.
 
 ## APK build instructions
+**Create Debug build**
  - Select the `build varient` (debug).
  - Select `Build` in top menu -> then `Build Apk Bundle(s) / Apk(s)` -> then `Build Apk`.
+ - 
+**Create Release build**
+ - Select the `build varient` (release).
+ - Select `Build` in top menu -> then `Generate Signed Apk Bundle` -> then `Select Apk or bundle` -> then add .jks key present at main root folder with key alias `key0` & password `vimaldubey` (Shared only for testing purpose else never share .jks keys) -> Locate build.
+ - Note: To run release build you have to edit congfiguration and set signin config to debug to successful run of release build in emulator or connected device. 
 
 ## Bonus features implemented
 - ✅ `Dark Mode:` Added dark mode, which will automatically change according to the device theme.
