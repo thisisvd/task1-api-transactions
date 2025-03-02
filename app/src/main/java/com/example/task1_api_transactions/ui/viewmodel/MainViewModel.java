@@ -43,6 +43,11 @@ public class MainViewModel extends ViewModel {
         mainRepository.getTransactions().observeForever(_transactions::setValue);
     }
 
+    // search transactions
+    public void searchTransactions(String searchQuery) {
+        mainRepository.searchTransactions(searchQuery).observeForever(_transactions::setValue);
+    }
+
     // clear login state after successful user login
     public void clearLoginState() {
         _login.setValue(null);

@@ -17,6 +17,9 @@ public interface TransactionDao {
     @Query("SELECT * FROM transactions_table")
     List<Transactions> getAllTransactions();
 
+    @Query("SELECT * FROM transactions_table " + "WHERE description LIKE '%' || :searchQuery || '%' " + "OR category LIKE '%' || :searchQuery || '%' " + "OR date LIKE '%' || :searchQuery || '%' " + "OR amount LIKE '%' || :searchQuery || '%'")
+    List<Transactions> searchTransactions(String searchQuery);
+
     @Query("DELETE FROM transactions_table")
     void deleteAllTransactions();
 }

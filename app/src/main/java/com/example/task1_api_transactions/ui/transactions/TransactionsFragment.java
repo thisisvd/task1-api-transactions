@@ -2,17 +2,25 @@ package com.example.task1_api_transactions.ui.transactions;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.task1_api_transactions.R;
 import com.example.task1_api_transactions.core.Resource;
 import com.example.task1_api_transactions.databinding.FragmentTransactionsBinding;
 import com.example.task1_api_transactions.ui.adapter.TransactionsAdapter;
@@ -40,6 +48,9 @@ public class TransactionsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false);
+        if (getActivity() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
         return binding.getRoot();
     }
 
@@ -50,11 +61,11 @@ public class TransactionsFragment extends Fragment {
         // init view model
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
+        // init menu provider
+        addMenuProvider();
+
         // call transactions api
         mainViewModel.getTransactions();
-
-        // logout button click listener
-        binding.logout.setOnClickListener(v -> mainViewModel.logout());
 
         // initialize view models
         initViewModels();
@@ -123,6 +134,42 @@ public class TransactionsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void addMenuProvider() {
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu, menu);
+
+                // Get the search item and its SearchView
+                MenuItem searchItem = menu.findItem(R.id.action_search);
+                SearchView searchView = (SearchView) searchItem.getActionView();
+
+                // Handle search query input
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        mainViewModel.searchTransactions(newText);
+                        return true;
+                    }
+                });
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_logout) {
+                    mainViewModel.logout();
+                    return true;
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 
     @Override

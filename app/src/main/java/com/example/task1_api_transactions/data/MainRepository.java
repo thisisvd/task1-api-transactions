@@ -129,6 +129,20 @@ public class MainRepository {
         return liveData;
     }
 
+    // search transactions
+    public LiveData<Resource<List<Transactions>>> searchTransactions(String searchQuery) {
+        MutableLiveData<Resource<List<Transactions>>> liveData = new MutableLiveData<>();
+        liveData.postValue(new Resource.Loading<>());
+
+        CoroutineHelper.INSTANCE.runInBackground(v -> {
+            List<Transactions> transactions = transactionDao.searchTransactions(searchQuery);
+            liveData.postValue(new Resource.Success<>(transactions));
+            return null;
+        });
+
+        return liveData;
+    }
+
     // store transaction in local db
     private void storeDataInLocalDB(List<Transactions> transactions) {
         CoroutineHelper.INSTANCE.runInBackground(v -> {
