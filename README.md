@@ -5,7 +5,7 @@
 </h1>
 
 <p align="center">
- <a href="#introduction">Project Overview</a> •
+ <a href="#project-overview">Project Overview</a> •
  <a href="#setup-instructions">Setup Instructions</a> •
  <a href="#apk-build-instructions">APK build instructions</a> •
  <a href="#bonus-features-implemented">Bonus features implemented</a> •
@@ -14,7 +14,7 @@
 </p>
 
 ## Project Overview
-
+The above project has been a task part for the tasks provided in the assignment [PDF](https://github.com/thisisvd/task1-api-transactions/blob/master/support/Android%20Development%20Assessment%20Tasks.pdf). The application contains 2 screens. One is the login screen in which the user will provide a username and password, and on pressing login, it will get a token, which will be saved securely in shared preferences, and they will be navigated to the next fragment, which is the transaction list fragment, which contains a list of transactions with 2 menu items: one to search for the items based on description, amount, date, or category, and the second is to log out, clicking on which clears the token. When the token is saved and the user launches an app, the biometric login will be called back to, and success will redirect to the transaction list fragment, and unsuccessful will close the biometric prompt and will allow the user to log in via username and password. The application also stores the transaction data in the DB using the ROOM. So, when the network is unavailable, it will fetch the data from the local DB. Used clean architecture for the project's modules and injected dependencies using Dagger-Hilt. Retrofit for the networking library, Timber for logging, and, of course, as stated, used Java for the application.
 
 ## Setup Instructions
 
