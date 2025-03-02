@@ -28,7 +28,7 @@ git clone https://github.com/thisisvd/task1-api-transactions.git
 **Create Debug build**
  - Select the `build varient` (debug).
  - Select `Build` in top menu -> then `Build Apk Bundle(s) / Apk(s)` -> then `Build Apk`.
- - 
+   
 **Create Release build**
  - Select the `build varient` (release).
  - Select `Build` in top menu -> then `Generate Signed Apk Bundle` -> then `Select Apk or bundle` -> then add .jks key present at main root folder with key alias `key0` & password `vimaldubey` (Shared only for testing purpose else never share .jks keys) -> Locate build.
