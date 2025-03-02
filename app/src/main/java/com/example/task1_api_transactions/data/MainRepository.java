@@ -51,15 +51,19 @@ public class MainRepository {
                     encryptedSharedPreference.saveToken(token);
                     liveData.postValue(new Resource.Success<>(RESULT_SUCCESS));
                 } else {
-                    Timber.d("Response : Error");
-                    liveData.postValue(new Resource.Error<>("Login Failed : " + response.code() + ", " + response.message()));
+                    String errorMsg = "Login Failed : " + response.code() + ", " + response.message();
+                    Timber.d(errorMsg);
+                    if (response.code() == 401) {
+                        errorMsg = "Invalid username or password";
+                    }
+                    liveData.postValue(new Resource.Error<>(errorMsg));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable throwable) {
                 Timber.d("Login Error : %s", throwable.getMessage());
-                liveData.postValue(new Resource.Error<>("Network error occurred"));
+                liveData.postValue(new Resource.Error<>("Network error occurred!"));
             }
         });
 
@@ -84,7 +88,7 @@ public class MainRepository {
                             liveData.postValue(new Resource.Error<>("Empty List"));
                         }
                     } else {
-                        Timber.d("Response : Error");
+                        Timber.d("Transactions Failed : " + response.code() + ", " + response.message());
                         liveData.postValue(new Resource.Error<>("Transactions Failed : " + response.code() + ", " + response.message()));
                     }
                 }
@@ -92,7 +96,7 @@ public class MainRepository {
                 @Override
                 public void onFailure(@NonNull Call<List<Transactions>> call, @NonNull Throwable throwable) {
                     Timber.d("Transactions Error : %s", throwable.getMessage());
-                    liveData.postValue(new Resource.Error<>("Network error occurred"));
+                    liveData.postValue(new Resource.Error<>("Network error occurred!"));
                 }
             });
         } else {

@@ -90,7 +90,7 @@ public class TransactionsFragment extends Fragment {
                 } else if (resource instanceof Resource.Error) {
                     binding.progressCircular.setVisibility(View.GONE);
                     Timber.d("Transaction Error : %s", resource.getMessage());
-                    Snackbar.make(binding.getRoot(), "Error occurred while logout!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(binding.getRoot(), resource.getMessage(), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

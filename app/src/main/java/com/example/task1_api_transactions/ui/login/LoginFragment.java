@@ -1,11 +1,13 @@
 package com.example.task1_api_transactions.ui.login;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,6 +64,7 @@ public class LoginFragment extends Fragment {
         binding.login.setOnClickListener(v -> {
             if (isUserValid()) {
                 mainViewModel.loginUser(new User(binding.userNameTv.getText().toString(), binding.passwordTv.getText().toString()));
+                hideKeyboard();
             }
         });
 
@@ -86,7 +89,7 @@ public class LoginFragment extends Fragment {
                 } else if (resource instanceof Resource.Error) {
                     binding.progressCircular.setVisibility(View.GONE);
                     Timber.d("Login Error : %s", resource.getMessage());
-                    Snackbar.make(binding.getRoot(), "Error occurred while login!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(binding.getRoot(), resource.getMessage(), Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -144,6 +147,14 @@ public class LoginFragment extends Fragment {
         }
 
         return true;
+    }
+
+    // hide keyboard
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(binding.getRoot().getWindowToken(), 0);
+        }
     }
 
     @Override
