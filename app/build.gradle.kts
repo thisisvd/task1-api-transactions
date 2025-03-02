@@ -10,16 +10,6 @@ android {
     namespace = "com.example.task1_api_transactions"
     compileSdk = 35
 
-    signingConfigs {
-        create("release") {
-            storeFile =
-                file("C:/Users/vimal/Music/Android Studio Projects/Personal/task1-api-transactions/task1-api-transactions.jks")
-            storePassword = "vimaldubey"
-            keyAlias = "key0"
-            keyPassword = "vimaldubey"
-        }
-    }
-
     defaultConfig {
         applicationId = "com.example.task1_api_transactions"
         minSdk = 24
@@ -32,7 +22,6 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
