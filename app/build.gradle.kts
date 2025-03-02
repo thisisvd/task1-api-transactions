@@ -12,7 +12,8 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:/Users/vimal/Music/Android Studio Projects/Personal/task1-api-transactions/task1-api-transactions.jks")
+            storeFile =
+                file("C:/Users/vimal/Music/Android Studio Projects/Personal/task1-api-transactions/task1-api-transactions.jks")
             storePassword = "vimaldubey"
             keyAlias = "key0"
             keyPassword = "vimaldubey"
@@ -75,13 +76,13 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
+    // Room components
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
     // Timber
     implementation(libs.timber)
-
-    // Navigation
-    implementation(libs.androidx.navigation.fragment.ktx.v250)
-    implementation(libs.androidx.navigation.ui.ktx.v250)
-    implementation(libs.androidx.navigation.fragment.v200rc02)
 
     // Encrypted Shared Preference
     implementation(libs.androidx.security.crypto)

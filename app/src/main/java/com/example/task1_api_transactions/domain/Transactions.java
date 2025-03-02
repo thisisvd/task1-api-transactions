@@ -1,9 +1,16 @@
 package com.example.task1_api_transactions.domain;
 
+import static com.example.task1_api_transactions.utils.Constants.DATABASE_TABLE_NAME;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = DATABASE_TABLE_NAME)
 public class Transactions {
 
+    @PrimaryKey
     @SerializedName("id")
     private int id;
 

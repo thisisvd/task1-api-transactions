@@ -6,12 +6,15 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.task1_api_transactions.core.NetworkUtils;
 import com.example.task1_api_transactions.core.Resource;
 import com.example.task1_api_transactions.data.local.EncryptedSharedPreference;
+import com.example.task1_api_transactions.data.local.room.TransactionDao;
 import com.example.task1_api_transactions.data.network.ApiImpl;
 import com.example.task1_api_transactions.domain.Transactions;
 import com.example.task1_api_transactions.domain.User;
 import com.example.task1_api_transactions.domain.UserResponse;
+import com.example.task1_api_transactions.utils.CoroutineHelper;
 
 import java.util.List;
 
@@ -29,12 +32,16 @@ public class MainRepository {
     // vars
     private final ApiImpl apiImpl;
     private final EncryptedSharedPreference encryptedSharedPreference;
+    private final TransactionDao transactionDao;
+    private final NetworkUtils networkUtils;
 
     // inject classes
     @Inject
-    public MainRepository(ApiImpl apiImpl, EncryptedSharedPreference encryptedSharedPreference) {
+    public MainRepository(ApiImpl apiImpl, EncryptedSharedPreference encryptedSharedPreference, TransactionDao transactionDao, NetworkUtils networkUtils) {
         this.apiImpl = apiImpl;
         this.encryptedSharedPreference = encryptedSharedPreference;
+        this.transactionDao = transactionDao;
+        this.networkUtils = networkUtils;
     }
 
     // login user
@@ -75,35 +82,62 @@ public class MainRepository {
         MutableLiveData<Resource<List<Transactions>>> liveData = new MutableLiveData<>();
         liveData.postValue(new Resource.Loading<>());
 
-        String token = encryptedSharedPreference.getToken();
+        if (networkUtils.isNetworkAvailable()) {
+            Timber.tag("NETWORK_CHECK").d("Available");
+            String token = encryptedSharedPreference.getToken();
 
-        if (token != null) {
-            apiImpl.getTransactions(token).enqueue(new Callback<>() {
-                @Override
-                public void onResponse(@NonNull Call<List<Transactions>> call, @NonNull Response<List<Transactions>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        if (!response.body().isEmpty()) {
-                            liveData.postValue(new Resource.Success<>(response.body()));
+            if (token != null) {
+                apiImpl.getTransactions(token).enqueue(new Callback<>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<Transactions>> call, @NonNull Response<List<Transactions>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (!response.body().isEmpty()) {
+                                storeDataInLocalDB(response.body());
+                                liveData.postValue(new Resource.Success<>(response.body()));
+                            } else {
+                                liveData.postValue(new Resource.Error<>("Empty List"));
+                            }
                         } else {
-                            liveData.postValue(new Resource.Error<>("Empty List"));
+                            Timber.d("Transactions Failed : " + response.code() + ", " + response.message());
+                            liveData.postValue(new Resource.Error<>("Transactions Failed : " + response.code() + ", " + response.message()));
                         }
-                    } else {
-                        Timber.d("Transactions Failed : " + response.code() + ", " + response.message());
-                        liveData.postValue(new Resource.Error<>("Transactions Failed : " + response.code() + ", " + response.message()));
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<List<Transactions>> call, @NonNull Throwable throwable) {
-                    Timber.d("Transactions Error : %s", throwable.getMessage());
-                    liveData.postValue(new Resource.Error<>("Network error occurred!"));
-                }
-            });
+                    @Override
+                    public void onFailure(@NonNull Call<List<Transactions>> call, @NonNull Throwable throwable) {
+                        Timber.d("Transactions Error : %s", throwable.getMessage());
+                        liveData.postValue(new Resource.Error<>("Network error occurred!"));
+                    }
+                });
+            } else {
+                Timber.d("Transactions Error : Empty Token.");
+                liveData.postValue(new Resource.Error<>("Transactions Failed : Empty Token."));
+            }
         } else {
-            Timber.d("Transactions Error : Empty Token.");
-            liveData.postValue(new Resource.Error<>("Transactions Failed : Empty Token."));
+            CoroutineHelper.INSTANCE.runInBackground(v -> {
+                List<Transactions> transactions = transactionDao.getAllTransactions();
+                if (!transactions.isEmpty()) {
+                    liveData.postValue(new Resource.Success<>(transactions));
+                } else {
+                    Timber.d("Transactions Error : Local data empty.");
+                    liveData.postValue(new Resource.Error<>("Transactions Failed : Local data empty."));
+                }
+                return null;
+            });
         }
+
         return liveData;
+    }
+
+    // store transaction in local db
+    private void storeDataInLocalDB(List<Transactions> transactions) {
+        CoroutineHelper.INSTANCE.runInBackground(v -> {
+            transactionDao.deleteAllTransactions();
+            for (Transactions transaction : transactions) {
+                transactionDao.insertTransactions(transaction);
+            }
+            return null;
+        });
     }
 
     public boolean hasToken() {

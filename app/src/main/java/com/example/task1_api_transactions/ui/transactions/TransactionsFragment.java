@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,9 @@ public class TransactionsFragment extends Fragment {
     // transaction adapter
     private TransactionsAdapter transactionsAdapter;
 
+    // on back pressed counter
+    private int onBackPressCount = 0;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false);
@@ -57,6 +61,9 @@ public class TransactionsFragment extends Fragment {
 
         // initialize recycler view
         initRecyclerView();
+
+        // handling on back pressed
+        handleOnBackPressed();
     }
 
     // init view models
@@ -101,6 +108,21 @@ public class TransactionsFragment extends Fragment {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         transactionsAdapter = new TransactionsAdapter();
         binding.recyclerView.setAdapter(transactionsAdapter);
+    }
+
+    // handle on back pressed
+    private void handleOnBackPressed() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                onBackPressCount++;
+                if (onBackPressCount == 1) {
+                    Snackbar.make(binding.getRoot(), "Press back again to close the app.", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    requireActivity().finish();
+                }
+            }
+        });
     }
 
     @Override

@@ -5,8 +5,7 @@ import static com.example.task1_api_transactions.utils.Constants.API_URL;
 import android.content.Context;
 
 import com.example.task1_api_transactions.BuildConfig;
-import com.example.task1_api_transactions.data.MainRepository;
-import com.example.task1_api_transactions.data.local.EncryptedSharedPreference;
+import com.example.task1_api_transactions.core.NetworkUtils;
 import com.example.task1_api_transactions.data.network.Api;
 import com.example.task1_api_transactions.data.network.ApiHelper;
 import com.example.task1_api_transactions.data.network.ApiImpl;
@@ -58,13 +57,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    public EncryptedSharedPreference provideEncryptedSharedPreference(@ApplicationContext Context context) {
-        return new EncryptedSharedPreference(context);
-    }
-
-    @Provides
-    @Singleton
-    public MainRepository provideMainRepository(ApiImpl apiImpl, EncryptedSharedPreference encryptedSharedPreference) {
-        return new MainRepository(apiImpl, encryptedSharedPreference);
+    public static NetworkUtils provideNetworkUtils(@ApplicationContext Context context) {
+        return new NetworkUtils(context);
     }
 }
