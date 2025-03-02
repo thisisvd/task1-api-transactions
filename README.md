@@ -10,7 +10,7 @@
  <a href="#apk-build-instructions">APK build instructions</a> •
  <a href="#bonus-features-implemented">Bonus features implemented</a> •
  <a href="#source-code">Source Code</a> •
- <a href="#released-apk">Released Apk</a> •
+ <a href="#released-apk">Released Apk</a>
 </p>
 
 ## Project Overview
