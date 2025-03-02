@@ -59,7 +59,11 @@ public class LoginFragment extends Fragment {
         setupBiometricPrompt();
 
         // login click listener
-        binding.login.setOnClickListener(v -> mainViewModel.loginUser(new User("admin", "A7ge#hu&dt(wer")));
+        binding.login.setOnClickListener(v -> {
+            if (isUserValid()) {
+                mainViewModel.loginUser(new User(binding.userNameTv.getText().toString(), binding.passwordTv.getText().toString()));
+            }
+        });
 
         // biometric listener
         binding.biometric.setOnClickListener(v -> biometricPrompt.authenticate(promptInfo));
@@ -119,6 +123,27 @@ public class LoginFragment extends Fragment {
         } else {
             binding.biometricLayout.setVisibility(View.GONE);
         }
+    }
+
+    // check for valid user credentials
+    private boolean isUserValid() {
+        String username = binding.userNameTv.getText().toString().trim();
+        if (username.isEmpty()) {
+            binding.usernameLayout.setError("Username cannot be empty");
+            return false;
+        } else {
+            binding.usernameLayout.setError(null);
+        }
+
+        String password = binding.passwordTv.getText().toString().trim();
+        if (password.isEmpty()) {
+            binding.passwordLayout.setError("Password cannot be empty");
+            return false;
+        } else {
+            binding.passwordLayout.setError(null);
+        }
+
+        return true;
     }
 
     @Override

@@ -6,4 +6,5 @@ public final class Constants {
 
     public static final String RESULT_SUCCESS = "success";
     public static final String PREFERENCE_TOKEN = "token";
+    public static final String API_URL = "https://api.prepstripe.com/";
 }
