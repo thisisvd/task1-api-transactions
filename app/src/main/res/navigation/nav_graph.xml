@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.task1_api_transactions.ui.login.LoginFragment"
+        android:label="">
+        <action
+            android:id="@+id/action_loginFragment_to_transactionsFragment"
+            app:destination="@id/transactionsFragment"
+            app:enterAnim="@anim/slide_left_animation"
+            app:exitAnim="@anim/wait_animation"
+            app:popEnterAnim="@anim/wait_animation"
+            app:popExitAnim="@anim/slide_right_animation" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/transactionsFragment"
+        android:name="com.example.task1_api_transactions.ui.transactions.TransactionsFragment"
+        android:label="" />
+
+</navigation>
